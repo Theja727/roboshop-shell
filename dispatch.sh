@@ -1,16 +1,20 @@
+source common.sh
+app_name=dispatch
+
+echo -e "$color Copy Dispatch Service file $no_color"
 cp dispatch.service /etc/systemd/system/dispatch.service
 
+echo -e "$color Install GoLang $no_color"
 dnf install golang -y
-useradd roboshop
-mkdir /app
-curl -L -o /tmp/dispatch.zip https://roboshop-artifacts.s3.amazonaws.com/dispatch-v3.zip
-cd /app
-unzip /tmp/dispatch.zip
-cd /app
+
+app_prerequisites
+
+echo -e "$color Copy Download Application Dependencies $no_color"
 go mod init dispatch
 go get
 go build
 
+echo -e "$color Start Application Service $no_color"
 systemctl daemon-reload
 systemctl enable dispatch
 systemctl restart dispatch
