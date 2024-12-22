@@ -12,7 +12,7 @@ dnf install mongodb-mongosh -y &>>$log_file
 status_check $?
 
 print_heading "Load Master Data"
-mongosh --host mongodb.rdevopsb81.online </app/db/master-data.js  &>>$log_file
+mongosh --host mongodb.tejadevopsb81.icu </app/db/master-data.js  &>>$log_file
 status_check $?
 
 print_heading "Restart Catalogue Service"
