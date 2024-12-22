@@ -1,24 +1,31 @@
 source common.sh
 app_name=dispatch
 
-echo -e "$color Copy Dispatch Service file $no_color"
-cp dispatch.service /etc/systemd/system/dispatch.service
-echo $?
+if [ -z "$1" ]; then
+  echo INput Rabbitmq Password is missing
+  exit 1
+fi
 
-echo -e "$color Install GoLang $no_color"
-dnf install golang -y
-echo $?
+RABBITMQ_PASSWORD=$1
+
+print_heading "Copy Dispatch Service file"
+cp dispatch.service /etc/systemd/system/dispatch.service &>>$log_file
+status_check $?
+
+print_heading "Install GoLang"
+dnf install golang -y &>>$log_file
+status_check $?
 
 app_prerequisites
 
-echo -e "$color Copy Download Application Dependencies $no_color"
-go mod init dispatch
-go get
-go build
-echo $?
+print_heading "Copy Download Application Dependencies"
+go mod init dispatch &>>$log_file
+go get &>>$log_file
+go build &>>$log_file
+status_check $?
 
-echo -e "$color Start Application Service $no_color"
-systemctl daemon-reload
-systemctl enable dispatch
-systemctl restart dispatch
-echo $?
+print_heading "Start Application Service"
+systemctl daemon-reload &>>$log_file
+systemctl enable dispatch &>>$log_file
+systemctl restart dispatch &>>$log_file
+status_check $?
